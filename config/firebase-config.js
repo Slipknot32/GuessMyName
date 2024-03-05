@@ -11,3 +11,5 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+
+//Firebase deploy  == https://guess-my-name-638d7.web.app/

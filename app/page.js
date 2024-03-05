@@ -1,25 +1,28 @@
 'use client'
-
-import Image from "next/image";
 import styles from "./page.module.scss";
 import { useState } from "react";
-import {Borel} from 'next/font/google';
+import { Borel } from 'next/font/google';
 
-const BorelFont = Borel({weight:"400", subsets:['latin']})
+const BorelFont = Borel({ weight: "400", subsets: ['latin'] })
 
 export default function Home() {
 
-  const [input, setInput ] = useState("");
+  const babyName = "Illyun".trim().toLowerCase() // toLowerCase for futur purpose (ex. other parents entry)
+
+  const [input, setInput] = useState("");
   const [nameGuessed, setNameGuessed] = useState(null)
-  const [isSubmitted, setIsSubmitted ] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
   const [count, setCount] = useState(0)
   const [compareResult, setCompareResult] = useState(null)
   const [correctLetters, setCorrectLetters] = useState([])
   const [wrongLetters, setWrongLetters] = useState([])
   const [incorrectLetters, setIncorrectLetters] = useState([])
-  const [extraLetters, setExtraLetters] = useState ([])
+  const [extraLetters, setExtraLetters] = useState([])
+  const [alphabet, setAlphabet] = useState("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""));
+  const [incorrectAlphabet, setIncorrectAlphabet] = useState([]);
+  const [allIncorrectAlphabets, setAllIncorrectAlphabets] = useState([]);
+  const [babyNameArray, setBabyNameArray] = useState(Array(babyName.length).fill(""));
 
-  const babyName = "Illyun".trim().toLowerCase() // toLowerCase for futur purpose (ex. other parents entry)
 
   const handleChange = (event) => {
     const userEntry = event.target.value
@@ -29,87 +32,87 @@ export default function Home() {
   const submitForm = (event) => {
     event.preventDefault()
     setIsSubmitted(true)
-    setNameGuessed(input.charAt(0).toUpperCase()+input.slice(1)) // Capitalize first letter
-    setCount(count+1)
+    setNameGuessed(input.charAt(0).toUpperCase() + input.slice(1)) // Capitalize first letter
+    setCount(count + 1)
     correctLettersCount(babyName, input)
   }
 
   const helpText = () => {
     let help
 
-  if (count === 6) {
-    help = <p><i>Indice:</i> Le prénom comporte {babyName.length} lettres.</p>
-  }
-  else if (count > 6 && count % 2 === 0) {
-    const index = (count / 2) - 2
-    if (index < babyName.length) {
-      const letter = babyName[index]
-      help = <p><i>Indice:</i> La lettre en {index+1}e position est <strong><i>{letter.toUpperCase()}</i></strong>.</p>
-    } else {
-      help = <p>Continue d&apos;essayer !</p>
+    if (count === 6) {
+      help = <p><i>Indice:</i> Le prénom comporte {babyName.length} lettres.</p>
     }
-  }
-  else {
-    help = <p>Indice au prochain tour.</p>
-  }
+    else if (count > 6 && count % 2 === 0) {
+      const index = (count / 2) - 2
+      if (index < babyName.length) {
+        const letter = babyName[index]
+        help = <p><i>Indice:</i> La lettre en {index + 1}e position est <strong><i>{letter.toUpperCase()}</i></strong>.</p>
+      } else {
+        help = <p>Continue d&apos;essayer !</p>
+      }
+    }
+    else {
+      help = <p>Indice au prochain tour.</p>
+    }
 
-  return help
-}
+    return help
+  }
 
   const resultBubble = () => {
 
     const rightName = <p>
-      Felicitations, <strong>{nameGuessed}</strong> est le prénom de notre bébé.<br/>
+      Felicitations, <strong>{nameGuessed}</strong> est le prénom de notre bébé.<br />
       Tu as trouvé après {count} {count > 1 ? "tentatives" : "tentative"}.
     </p>
 
     const wrongName = <>
-    <p>Pour le prénom <strong>{nameGuessed}</strong>,&nbsp;
-    {correctLetters.length === 0 ?
-    wrongLetters.length > 0 ?
-    "certaines lettres ne sont pas à la bonne place."
-    :"aucune lettre ne correspond, pas de chance..."
-      : correctLetters.length === 1 ?
-        "la seule lettre bien placée est : " 
-        : "les lettres bien placées sont : "
-    }
+      <p>Pour le prénom <strong>{nameGuessed}</strong>,&nbsp;
+        {correctLetters.length === 0 ?
+          wrongLetters.length > 0 ?
+            "certaines lettres ne sont pas à la bonne place."
+            : "aucune lettre ne correspond, pas de chance..."
+          : correctLetters.length === 1 ?
+            "la seule lettre bien placée est : "
+            : "les lettres bien placées sont : "
+        }
         {correctLetters && correctLetters.map((letter, index) => (
           <span key={index}>
             <strong><i>{letter}</i></strong>
-            {index === correctLetters.length - 2 ? ' et ' : 
-            index < correctLetters.length - 1 ? ', ' : '.'}
-        </span>
+            {index === correctLetters.length - 2 ? ' et ' :
+              index < correctLetters.length - 1 ? ', ' : '.'}
+          </span>
         ))}
       </p>
       {wrongLetters && wrongLetters.length > 0 ? <>
         <p>Essaye de replacer&nbsp;
-        {wrongLetters && wrongLetters.map((letter, index) => (
-          <span key={index}>
-            <strong><i>{letter}</i></strong>
-            {index === wrongLetters.length - 2 ? ' et ' : 
-            index < wrongLetters.length - 1 ? ', ' : '.'}
-        </span> 
-        ))}
-      </p></>: null}
+          {wrongLetters && wrongLetters.map((letter, index) => (
+            <span key={index}>
+              <strong><i>{letter}</i></strong>
+              {index === wrongLetters.length - 2 ? ' et ' :
+                index < wrongLetters.length - 1 ? ', ' : '.'}
+            </span>
+          ))}
+        </p></> : null}
       {
         extraLetters && extraLetters.length > 0 ? <>
-        <p>Il y a&nbsp;
-        {extraLetters.length === 1 ?
-        "un" : "des"}&nbsp;
-        {extraLetters && extraLetters.map((letter, index) => (
-          <span key={index}>
-            <strong><i>{letter}</i></strong>
-            {index === extraLetters.length - 2 ? ' et ' : 
-            index < extraLetters.length - 1 ? ', ' : ' '}
-        </span> 
-        ))}
-        en trop.</p></> : null
+          <p>Il y a&nbsp;
+            {extraLetters.length === 1 ?
+              "un" : "des"}&nbsp;
+            {extraLetters && extraLetters.map((letter, index) => (
+              <span key={index}>
+                <strong><i>{letter}</i></strong>
+                {index === extraLetters.length - 2 ? ' et ' :
+                  index < extraLetters.length - 1 ? ', ' : ' '}
+              </span>
+            ))}
+            en trop.</p></> : null
       }
       {
         (correctLetters && correctLetters.length > 0 || wrongLetters && wrongLetters.length > 0) && incorrectLetters && incorrectLetters.length > 0 ?
-        "Les autres lettres sont inutiles" : null
+          "Les autres lettres sont inutiles" : null
       }
-      { count > 4 ?
+      {count > 4 ?
         helpText() : null
       }
     </>
@@ -127,9 +130,9 @@ export default function Home() {
 
     if (incorrectLetters && incorrectLetters.length > 0 && correctLetters && correctLetters.length === 0) {
       emoji = <p>😅</p>;
-    } else if (babyName && nameGuessed && babyName.toLowerCase() === nameGuessed.toLowerCase()){
+    } else if (babyName && nameGuessed && babyName.toLowerCase() === nameGuessed.toLowerCase()) {
       emoji = <p>🥳</p>;
-    }else {
+    } else {
       switch (correctLetters.length) {
         case 1:
           emoji = <p>🫤</p>;
@@ -155,34 +158,24 @@ export default function Home() {
     )
   }
 
-  //idealement distance de Levenshtein
-
-  // const correctLettersCount = (babyName, nameGuessed) => {
-  //   const lengthToCompare = Math.min(babyName.length, nameGuessed.length);
-  //   let correctLettersCount = 0
-
-  //   for (let i = 0; i < lengthToCompare; i++) {
-  //     if (babyName[i] === nameGuessed[i]) {
-  //       correctLettersCount++
-  //     }
-  //   }
-
-  //   return correctLettersCount
-  // }
-
   const correctLettersCount = (babyName, nameGuessed) => {
     let resultat = [];
     let correctLetters = [];
     let wrongLetters = [];
     let incorrectLetters = [];
-    let tempExtraLetters = []; // Utiliser un tableau temporaire pour les lettres en trop
+    let tempExtraLetters = [];
     let letterCount = {};
-  
+    let tempIncorrectAlphabet = [];
+    let tempBabyNameArray = [...babyNameArray];
+
+    setIncorrectAlphabet([]);
+    
+
     // Compter les occurrences de chaque lettre dans babyName
     for (let letter of babyName) {
       letterCount[letter] = (letterCount[letter] || 0) + 1;
     }
-  
+
     for (let i = 0; i < nameGuessed.length; i++) {
       if (babyName[i] === nameGuessed[i]) {
         resultat.push({ id: i, lettre: nameGuessed[i], etat: "correct" });
@@ -196,56 +189,129 @@ export default function Home() {
         } else {
           // Si la lettre est présente dans babyName mais que le compteur est à 0, elle est en trop
           tempExtraLetters.push(nameGuessed[i].toUpperCase());
+          // Ajouter à incorrectAlphabet uniquement si la lettre n'est pas déjà présente
+          if (!tempIncorrectAlphabet.includes(nameGuessed[i].toUpperCase())) {
+            tempIncorrectAlphabet.push(nameGuessed[i].toUpperCase());
+          }
         }
       } else {
         resultat.push({ id: i, lettre: nameGuessed[i], etat: "incorrect" });
         incorrectLetters.push(nameGuessed[i].toUpperCase());
+        // Ajouter à incorrectAlphabet uniquement si la lettre n'est pas déjà présente
+        if (!tempIncorrectAlphabet.includes(nameGuessed[i].toUpperCase())) {
+          tempIncorrectAlphabet.push(nameGuessed[i].toUpperCase());
+        }
       }
     }
-  
+
+    for (let i = 0; i < babyName.length; i++) {
+      if (babyName[i] === nameGuessed[i]) {
+        tempBabyNameArray[i] = nameGuessed[i].toUpperCase();
+      }
+    }
+
     setCompareResult(resultat);
     setCorrectLetters(correctLetters);
     setWrongLetters(wrongLetters);
     setIncorrectLetters(incorrectLetters);
     setExtraLetters(tempExtraLetters);
-  }
+    setIncorrectAlphabet(tempIncorrectAlphabet);
+    setAllIncorrectAlphabets(prev => [...prev, ...tempIncorrectAlphabet]);
+    setBabyNameArray(tempBabyNameArray);
+  };
+
+  const renderAlphabet = () => {
+    const alphabetRows = [
+      alphabet.slice(0, 13), // Première ligne A à M
+      alphabet.slice(13),     // Deuxième ligne N à Z
+    ];
+  
+    //const baseColor = count === 0 ? "black" : "inherit";
+  
+    return (
+      <div className="content_Alphabet">
+        {alphabetRows.map((row, rowIndex) => (
+          <div id={`alphabet-row-${rowIndex + 1}`} key={rowIndex}>
+            {row.map((letter) => {
+              let textColor;
+              if (count === 0) {
+                textColor = "black";
+              } else if (allIncorrectAlphabets.includes(letter) || !compareResult || compareResult.length === 0) {
+                textColor = "red";
+              } else {
+                textColor = "black";
+              }  
+              return (
+                <span
+                  key={letter}
+                  style={{
+                    color: textColor,
+                  }}
+                >
+                  {letter}
+                </span>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderBabyNameArray = () => {
+    const tableRows = babyNameArray.map((letter, index) => (
+      <td key={index}>{letter || '#'}</td>
+    ));  
+    return (
+      <table>
+        <thead>
+          <tr>
+            {tableRows}
+          </tr>
+        </thead>
+      </table>
+    );
+  };
 
 
   return (
-  <>
-    <header style={{textAlign:"center"}}>
-      <h1 className={BorelFont.className}>Devine mon nom</h1>
-    </header>
-    <main className={styles.main_container}>
-      <div className={styles.result_container}>
-        <div className={styles.resultBubble_text}>
-          { count > 0 ?
-        resultBubble()
-        : <><p>Bienvenue dans ce petit jeu dont le but est de te faire deviner le nom du bébé.</p>
-        <p>Tente ta chance et n&apos;hésites pas à nous partager ton score.</p></>}
-        </div>
-          {emojiFeedback()}
-      </div>
-      <div className={styles.input_background_image}>
-        <form onSubmit={submitForm}>
-          <div className={styles.input_container}>
-            <input className={styles.name_input} type="text" name="input" onChange={handleChange}/>
-            <button className={BorelFont.className} id={styles.submit_form_button}>
-            {/* <button className={styles.submit_form_button}> */}
-              {
-                count < 1 ?
-              "Tenter ma chance"
-            : "Retenter ma chance"}
-              </button>
+    <>
+      <header style={{ textAlign: "center" }}>
+        <h1 className={BorelFont.className}>Devine mon nom</h1>
+      </header>
+      <main className={styles.main_container}>
+        <div className={styles.result_container}>
+          <div className={styles.resultBubble_text}>
+            {count > 0 ?
+              resultBubble()
+              : <><p>Bienvenue dans ce petit jeu dont le but est de te faire deviner le nom du bébé.</p>
+                <p>Tente ta chance et n&apos;hésites pas à nous partager ton score.</p></>}
           </div>
-        </form>
-      </div>
-    </main>
-    <footer style={{textAlign:"center"}}>
-      <p>
-      Fait avec 🍼 par Mylène Abadie
-      </p>
-    </footer>
+          {emojiFeedback()}
+        </div>
+        <div className={styles.input_background_image}>
+          <form onSubmit={submitForm}>
+            <div className={styles.input_container}>
+              <input className={styles.name_input} type="text" name="input" onChange={handleChange} />
+              <button className={BorelFont.className} id={styles.submit_form_button}>
+                {count < 1 ?
+                  "Tenter ma chance"
+                  : "Retenter ma chance"}
+              </button>
+            </div>
+          </form>
+        </div>
+          <div className={styles.alphabet}>
+            {renderAlphabet()}
+          </div>
+          {/* {count >= 6 && babyNameArray.some(cell => cell === "") ? (<div className={styles.baby_name_array}>{renderBabyNameArray()}</div>) : null} */}
+          <div className={styles.baby_name_array}>{renderBabyNameArray()}</div>
+      </main>
+      <footer style={{ textAlign: "center" }}>
+        <p>
+          Fait avec 🍼 par Mylène Abadie
+        </p>
+      </footer>
     </>
   );
 }
