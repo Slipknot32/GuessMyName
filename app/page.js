@@ -241,7 +241,7 @@ export default function Home() {
               } else {
                 textColor = "black";
               }  
-              return (
+              return (                
                 <span
                   key={letter}
                   style={{
@@ -302,10 +302,16 @@ export default function Home() {
           </form>
         </div>
           <div className={styles.alphabet}>
+          <p className={BorelFont.className}>Si les lettres sont rouges, c&apos;est <br/> qu&apos;elle ne sont pas dans le prénom :</p>                     
             {renderAlphabet()}
           </div>
-          {/* {count >= 6 && babyNameArray.some(cell => cell === "") ? (<div className={styles.baby_name_array}>{renderBabyNameArray()}</div>) : null} */}
-          <div className={styles.baby_name_array}>{renderBabyNameArray()}</div>
+          {count >= 6 && babyNameArray.some(cell => cell === "") 
+          ? (<div className={styles.baby_name_array}>
+            <p className={BorelFont.className}>Ici tu retrouvera les <br/>lettres bien positionné :</p>
+              {renderBabyNameArray()}
+            </div>) 
+          : null}
+          {/* <div className={styles.baby_name_array}><p className={BorelFont.className}>Ici tu retrouvera les <br/>lettres bien positionné :</p>{renderBabyNameArray()}</div> */}
       </main>
       <footer style={{ textAlign: "center" }}>
         <p>
