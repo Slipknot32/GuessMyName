@@ -1,16 +1,44 @@
+/// main container --------------------------------------
+
 .main_container {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(2, 1fr);
+}
+
+//result
+.main_container > div:nth-child(1) {
+  grid-area: 1 / 2; 
+}
+//input
+.main_container > div:nth-child(2) {
+  grid-area: 2 / 2; 
+}
+//alphabet
+.main_container > div:nth-child(3) { 
+  grid-area: 1 / 3;
+  display :flex;
+  align-items:center;
   justify-content: center;
 }
+//cases
+.main_container > div:nth-child(4) {
+  grid-area: 2 / 1; 
+  display :flex;
+  align-items:center;
+  justify-content: center;  
+}
+// main END -----------------------------------------------
 
 .guess_description {
   font-size: 20px;
 }
 
+/// Input container --------------------------------------
 .input_background {
   position: absolute;
 }
+
 .input_background_image {
   background-image: url('/images/tache_pink.png');
   background-size:contain;
@@ -19,8 +47,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
-  // padding-right: 80px;
+  align-content: center;
 }
 
 .input_container { 
@@ -60,6 +87,9 @@
     background-position: left bottom;
   }
 }
+// main END -----------------------------------------------
+
+// Résult container ------------------------------------------
 
 .result_container {
   display: flex;
@@ -101,6 +131,44 @@
   align-self: center;
   margin: 0 20px;
 }
+// Résult END ------------------------------------------
+
+// Alphabet container ------------------------------------------
+.alphabet{  
+  background: url("../public/images/Alphabet.png");
+  background-size: 86%;
+  background-repeat: no-repeat; 
+  font-size: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+// Alphabet END ------------------------------------------
+
+// Cases container ------------------------------------------
+.baby_name_array{  
+  background: url("../public/images/Cases.png");  
+  background-size: 85%;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-size: 20px;  
+}
+.baby_name_array>table{ 
+  border-collapse: collapse;
+  width: 30%;
+  height: 10%;
+  margin: 5px;
+}
+.baby_name_array>table>thead>tr>td{
+  width: 5px;
+  height: 5px;
+  border: 1px solid black;
+  text-align: center;
+  background-color: #feffa3;
+}
+
+// Cases END ------------------------------------------
+
 
 //media queries
 
